@@ -38,16 +38,18 @@ defmodule Hstore.Parser do
   end
 
   defp parse_value(value) do
-    case Regex.match?(@null, value) do
-      true -> nil
-      false -> replace_constant(unescape(un_double_quote(value)))
+    if Regex.match?(@null, value) do
+      nil
+    else
+      replace_constant(unescape(un_double_quote(value)))
     end
   end
 
   def un_double_quote(value) do
-    case Regex.match?(@double_quoted_string, value) do
-      true -> Regex.replace(@double_quoted_string, value, "\\1")
-      false -> value
+    if Regex.match?(@double_quoted_string, value) do
+      Regex.replace(@double_quoted_string, value, "\\1")
+    else
+      value
     end
   end
 
@@ -77,5 +79,4 @@ defmodule Hstore.Parser do
         value
     end
   end
-
 end
