@@ -1,13 +1,66 @@
 defmodule Hstore do
   alias Postgrex.TypeInfo
 
+  @single_quote "'"
+  @e_single_quote "E'"
+  @double_quote "\""
+  @hashrocket "=>"
+  @comma ","
+  @slash "\\"
+
+  @escaped_char ~r/\\(.)/
+  @escaped_single_quote "\\\'"
+  @escaped_double_quote "\\\""
+  @escaped_slash "\\\\"
+  @double_quoted_string ~r/\A"(.+)"\z/
+  @quoted_literal ~r/"[^"\\]*(?:\\.[^"\\]*)*"/
+  @unquoted_literal ~r/[^\s=,][^\s=,\\]*(?:\\.[^\s=,\\]*|=[^,>])*/
+  @literal ~r/(#{Regex.source(@quoted_literal)}|#{Regex.source(@unquoted_literal)})/
+  @pair ~r/#{Regex.source(@literal)}\s*=>\s*#{Regex.source(@literal)}/
+  @null ~r/\ANULL\z/
+
   # passes in (TypeInfo, format, default, binary)
-  def decoder(%TypeInfo{sender: "hstore"}, _, _, <<(number_of_pairs::size(32)), (rest::binary)>>) do
-    decode_hstore_pairs(number_of_pairs, %{}, rest)
+  def decoder(%TypeInfo{sender: "hstore", type: "hstore"} = type_info, _format, _default, bin) do
+    Enum.reduce Regex.scan(@pair, bin), %{}, fn ([_raw, key, value], mapp) ->
+      real_key = unescape un_double_quote key
+      real_value = case Regex.match?(@null, value) do
+        true -> nil
+        false -> replace_constant(unescape(un_double_quote(value)))
+      end
+      Dict.put(mapp, real_key, real_value)
+    end
+
   end
 
   def decoder(%TypeInfo{}, _format, default, bin) do
     default.(bin)
+  end
+
+  def un_double_quote(value) do
+    case Regex.match?(@double_quoted_string, value) do
+      true -> Regex.replace(@double_quoted_string, value, "\\1")
+      _ -> value
+    end
+  end
+
+  def replace_constant("true") do
+    true
+  end
+
+  def replace_constant("false") do
+    false
+  end
+
+  def replace_constant(value) do
+    value
+  end
+
+  def unescape(value) do
+    Regex.replace(@escaped_char, value, "\\1")
+  end
+
+  def encoder(%TypeInfo{sender: "hstore"}, _, nil) do
+    nil
   end
 
   def encoder(%TypeInfo{sender: "hstore"}, _, value) do
@@ -39,16 +92,6 @@ defmodule Hstore do
       end
     end
 
-  end
-
-  def decode_hstore_pairs(0, acc, _binary) do
-    acc
-  end
-
-  def decode_hstore_pairs(number_of_pairs, acc, bin) do
-    <<(key_size::size(32)), (key::binary-size(key_size)), (rest::binary)>> = bin
-    <<(value_size::size(32)), (value::binary-size(value_size)), (rest::binary)>> = rest
-    decode_hstore_pairs(number_of_pairs - 1, Dict.put(acc, key, value), rest)
   end
 
 end
