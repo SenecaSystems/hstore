@@ -5,7 +5,7 @@ defmodule Geo.Mixfile do
 
   def project do
     [ app: :hstore,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 1.0.0",
       deps: deps,
       description: description,
@@ -35,7 +35,7 @@ defmodule Geo.Mixfile do
       contributors: ["Chris Maddox"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/bryanjos/geo",
+        "GitHub" => "https://github.com/senecasystems/hstore",
         "Postgrex" => "https://github.com/ericmj/postgrex"
        }
     ]

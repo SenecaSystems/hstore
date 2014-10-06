@@ -1,6 +1,7 @@
 defmodule HstoreTest do
   use ExUnit.Case, async: true
 
+  # High level integration tests
   test "speedy thing goes in, speedy thing comes out" do
     test_map = %{
       "YOLO" => false,
