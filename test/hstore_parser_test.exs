@@ -19,4 +19,9 @@ defmodule HstoreParserTest do
     result_map = Hstore.Parser.decode ~s("bubbles"=>"7")
     assert result_map == %{"bubbles" => 7}
   end
+
+  test "it can decode floats" do
+    result_map = Hstore.Parser.decode ~s("bubbles"=>"7.5")
+    assert result_map == %{"bubbles" => 7.5}
+  end
 end

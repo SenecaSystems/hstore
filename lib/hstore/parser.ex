@@ -3,6 +3,7 @@ defmodule Hstore.Parser do
   ## Full credit for decoding goes to the pg-hstore ruby gem:
   # https://github.com/seamusabshere/pg-hstore/blob/master/lib/pg_hstore.rb
 
+  # Punctuation
   @single_quote "'"
   @e_single_quote "E'"
   @double_quote "\""
@@ -10,7 +11,10 @@ defmodule Hstore.Parser do
   @comma ","
   @slash "\\"
 
+  # Types
   @integer ~r/\A\d+\z/
+  @float ~r/\A\d+\.\d+\z/
+
   @escaped_char ~r/\\(.)/
   @escaped_single_quote "\\\'"
   @escaped_double_quote "\\\""
@@ -65,8 +69,10 @@ defmodule Hstore.Parser do
 
   defp parse_types(value) do
     case Regex.match?(@integer, value) do
-      true -> String.to_integer(value)
-      false -> value
+      true ->
+        String.to_integer(value)
+      false ->
+        if Regex.match?(@float, value), do: String.to_float(value), else: value
     end
   end
 
