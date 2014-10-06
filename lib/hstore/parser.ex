@@ -47,7 +47,7 @@ defmodule Hstore.Parser do
   def un_double_quote(value) do
     case Regex.match?(@double_quoted_string, value) do
       true -> Regex.replace(@double_quoted_string, value, "\\1")
-      _ -> value
+      false -> value
     end
   end
 
@@ -68,11 +68,13 @@ defmodule Hstore.Parser do
   end
 
   defp parse_types(value) do
-    case Regex.match?(@integer, value) do
-      true ->
+    cond do
+      Regex.match?(@integer, value) ->
         String.to_integer(value)
-      false ->
-        if Regex.match?(@float, value), do: String.to_float(value), else: value
+      Regex.match?(@float, value) ->
+        String.to_float(value)
+      true ->
+        value
     end
   end
 
