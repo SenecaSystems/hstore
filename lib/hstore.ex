@@ -1,6 +1,9 @@
 defmodule Hstore do
   alias Postgrex.TypeInfo
 
+  ## Full credit for decoding goes to the pg-hstore ruby gem:
+  # https://github.com/seamusabshere/pg-hstore/blob/master/lib/pg_hstore.rb
+
   @single_quote "'"
   @e_single_quote "E'"
   @double_quote "\""
