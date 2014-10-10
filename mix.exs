@@ -1,6 +1,6 @@
 Code.ensure_loaded?(Hex) and Hex.start
 
-defmodule Geo.Mixfile do
+defmodule Hstore.Mixfile do
   use Mix.Project
 
   def project do
@@ -20,13 +20,16 @@ defmodule Geo.Mixfile do
 
   defp description do
     """
-    A collection of encoders and decoders for hstore data type support for Postgrex.
+    A collection of encoders and decoders for hstore data type support for Postgrex and Ecto.
     """
   end
 
   defp deps do
-    [{:postgrex, "~> 0.6.0", github: "SenecaSystems/postgrex", branch: "hstore" },
-     {:apex, "~>0.3.0"}]
+    [
+      {:postgrex, "~> 0.6.0", path: "../postgrex" },
+      {:ecto, "~>0.2", path: "../ecto"},
+      {:apex, "~>0.3.0", only: :dev}
+   ]
   end
 
   defp package do
@@ -36,7 +39,8 @@ defmodule Geo.Mixfile do
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/senecasystems/hstore",
-        "Postgrex" => "https://github.com/ericmj/postgrex"
+        "Postgrex" => "https://github.com/ericmj/postgrex",
+        "Ecto" => "https://github.com/elixir-lang/ecto"
        }
     ]
   end

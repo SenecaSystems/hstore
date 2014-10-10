@@ -14,6 +14,7 @@ defmodule Hstore do
     default.(bin)
   end
 
+
   def encoder(@hstore_type, _, nil) do
     nil
   end
@@ -26,8 +27,5 @@ defmodule Hstore do
   def encoder(%TypeInfo{}, default, value) do
     default.(value)
   end
-
-  def formatter(%TypeInfo{sender: "hstore"}), do: :text
-  def formatter(%TypeInfo{}), do: nil
 
 end

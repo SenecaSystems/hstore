@@ -1,8 +1,5 @@
 defmodule Hstore.Encoder do
 
-  ## Full credit for decoding goes to the pg-hstore ruby gem:
-  # https://github.com/seamusabshere/pg-hstore/blob/master/lib/pg_hstore.rb
-
   # Punctuation
   @single_quote "'"
   @e_single_quote "E'"
