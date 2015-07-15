@@ -25,7 +25,7 @@ defmodule Geo.Mixfile do
   end
 
   defp deps do
-    [{:postgrex, "~> 0.6.0", github: "SenecaSystems/postgrex", branch: "hstore" },
+    [{:postgrex, "~> 0.6.0"},
      {:apex, "~>0.3.0"}]
   end
 
