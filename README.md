@@ -10,7 +10,7 @@ HStore support for Postgrex
 ```
 
 Now all up in your `iex -S mix`:
-```elixer
+```elixir
   opts = [
     hostname: "localhost",
     username: "postgres",
